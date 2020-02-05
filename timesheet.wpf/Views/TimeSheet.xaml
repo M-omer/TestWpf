@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="timesheet.wpf.Views.TimeSheet"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:timesheet.wpf.Views"
+             mc:Ignorable="d" 
+             Background="White"
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <UserControl.Resources>
+        <Style x:Key="Link" TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="Blue"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock TextDecorations="Underline" Text="{TemplateBinding Content}" Background="{TemplateBinding Background}"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Foreground" Value="Red"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="Navbtn" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel  Margin="50">
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Select Employee"/>
+                <ComboBox ItemsSource="{Binding employees,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" DisplayMemberPath="Name" Margin="10,0" Width="150">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding SelectedEmpChangedCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+            </StackPanel>
+
+        </Grid>
+        <Grid Margin="0 30">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Content="&lt;" Style="{StaticResource Navbtn}" Click="NavWeekly_Click"/>
+                <TextBlock x:Name="SheetTitle" Text="Weekly" Margin="10 0" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                <Button Content=">" Style="{StaticResource Navbtn}" Click="NavDaily_Click"/>
+            </StackPanel>
+        </Grid>
+        <StackPanel x:Name="Weekly" Visibility="Visible">
+            <DataGrid x:Name="DGTasks"  ItemsSource="{Binding TaskObj,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" AutoGenerateColumns="False" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="DGName" Width="*" Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
+                    <DataGridTextColumn x:Name="DGSaturday" Width="*" Header="Saturday" Binding="{Binding Saturday}" />
+                    <DataGridTextColumn x:Name="DGSunday" Width="*" Header="Sunday" Binding="{Binding Sunday}" />
+                    <DataGridTextColumn x:Name="DGMonday" Width="*" Header="Monday" Binding="{Binding Monday}" />
+                    <DataGridTextColumn x:Name="DGTuesday" Width="*" Header="Tuesday" Binding="{Binding Tuesday}"  />
+                    <DataGridTextColumn x:Name="DGWednesday" Width="*" Header="Wednesday" Binding="{Binding Wednesday}" />
+                    <DataGridTextColumn x:Name="DGThursday" Width="*" Header="Thursday" Binding="{Binding Thursday}" />
+                    <DataGridTextColumn x:Name="DGFriday" Width="*" Header="Friday" Binding="{Binding Friday}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Background="GhostWhite">
+                <Border BorderThickness="1" BorderBrush="LightGray" Width="{Binding ElementName=DGName,Path=ActualWidth}">
+                    <TextBlock Margin="5,0,0,0" Text="Total" HorizontalAlignment="Right"></TextBlock>
+                </Border>
+                <Border BorderThickness="1" BorderBrush="LightGray" Width="{Binding ElementName=DGSaturday,Path=ActualWidth}">
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TotalValue.Saturday}" HorizontalAlignment="Right"></TextBlock>
+                </Border>
+                <Border BorderThickness="1" BorderBrush="LightGray" Width="{Binding ElementName=DGSunday,Path=ActualWidth}">
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TotalValue.Sunday}" HorizontalAlignment="Right"></TextBlock>
+                </Border>
+                <Border BorderThickness="1" BorderBrush="LightGray" Width="{Binding ElementName=DGMonday,Path=ActualWidth}">
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TotalValue.Monday}" HorizontalAlignment="Right"></TextBlock>
+                </Border>
+                <Border BorderThickness="1" BorderBrush="LightGray" Width="{Binding ElementName=DGTuesday,Path=ActualWidth}">
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TotalValue.Tuesday}" HorizontalAlignment="Right"></TextBlock>
+                </Border>
+                <Border BorderThickness="1" BorderBrush="LightGray" Width="{Binding ElementName=DGWednesday,Path=ActualWidth}">
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TotalValue.Wednesday}" HorizontalAlignment="Right"></TextBlock>
+                </Border>
+                <Border BorderThickness="1" BorderBrush="LightGray"  Width="{Binding ElementName=DGThursday,Path=ActualWidth}">
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TotalValue.Thursday}" HorizontalAlignment="Right"></TextBlock>
+                </Border>
+                <Border BorderThickness="1" BorderBrush="LightGray" Width="{Binding ElementName=DGFriday,Path=ActualWidth}">
+                    <TextBlock Margin="5,0,0,0"  Text="{Binding TotalValue.Friday}" HorizontalAlignment="Right"></TextBlock>
+                </Border>
+            </StackPanel>
+           
+        </StackPanel>
+        <StackPanel x:Name="Daily" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal" Margin="5 10">
+                <TextBlock Text="Days" VerticalAlignment="Center"/>
+                <ComboBox x:Name="CBDOW" Width="150"  ItemsSource="{Binding DaysOfWeek}" SelectedIndex="0" SelectedItem="{Binding SelectedDay, Mode=OneWayToSource}"  Margin="10 0">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding DailySelectionChangedCommand}" CommandParameter="{Binding ElementName=CBDOW,Path=SelectedItem}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <TextBlock Text="Task" VerticalAlignment="Center"/>
+                <ComboBox x:Name="CBTS" Width="150" ItemsSource="{Binding TasksSource}" DisplayMemberPath="Name"  SelectedItem="{Binding SelectedTask, Mode=OneWayToSource}" Margin="10 0">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding DailySelectionChangedCommand}" CommandParameter="{Binding ElementName=CBTS,Path=SelectedItem}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+            </StackPanel>
+
+            <Grid  Grid.Row="2" Background="GhostWhite">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                    <TextBlock Margin="5 5" Text="Date" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Margin="5 5" Grid.Column="1" Text="{Binding TimeSheets.Date}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Margin="5 5" Grid.Row="1" Text="Worked Hours" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Margin="5 5" Grid.Row="1" Grid.Column="1" Text="{Binding TimeSheets.Hours}" HorizontalAlignment="Left"></TextBlock>
+            </Grid>
+        </StackPanel>
+        <Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                <Button Content="Back to list" Padding="5 0" Click="GoBackToList_Click"/>
+                <Button Content="Save" Padding="5 0" Margin="50 0 0 0" Command="{Binding EditCommand}"  CommandParameter="{Binding ItemsSource,ElementName=DGTasks}"/>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+
+</UserControl>
